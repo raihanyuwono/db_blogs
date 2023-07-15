@@ -1,2 +1,5 @@
 /node_modules
 .env
+note_contries_list
+notes_db
+notes_router
