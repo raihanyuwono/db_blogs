@@ -15,7 +15,7 @@ api.use(express.json());
 
 api.use("/auth", authRouter);
 api.use("/profile", profileRouter);
-api.use("/blog", blogRouter);
+api.use("/blogs", blogRouter);
 
 api.listen(PORT, () => {
     console.log(`Server Running at localhost post ${PORT}`);
