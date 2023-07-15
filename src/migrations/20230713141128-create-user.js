@@ -1,5 +1,5 @@
 "use strict";
-
+const { v4: uuidv4 } = require("uuid");
 const { DataTypes } = require("sequelize");
 
 /** @type {import('sequelize-cli').Migration} */
@@ -9,10 +9,9 @@ module.exports = {
             "users",
             {
                 id: {
-                    allowNull: false,
                     primaryKey: true,
                     type: Sequelize.UUID,
-                    defaultValue: Sequelize.UUIDV4,
+                    defaultValue: uuidv4(),
                 },
                 username: {
                     allowNull: false,
@@ -43,10 +42,12 @@ module.exports = {
                 created_at: {
                     allowNull: false,
                     type: Sequelize.DATE,
+                    defaultValue: Sequelize.NOW,
                 },
-                modified_at: {
+                updated_at: {
                     allowNull: false,
                     type: Sequelize.DATE,
+                    defaultValue: Sequelize.NOW,
                 },
             },
             { underscored: true }

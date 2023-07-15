@@ -20,9 +20,10 @@ module.exports = {
                 created_at: {
                     allowNull: false,
                     type: Sequelize.DATE,
+                    defaultValue: Sequelize.NOW,
                 },
             },
-            { timestapms: true, modifiedAt: false, underscored: true }
+            { timestapms: true, updatedAt: false, underscored: true }
         );
     },
     async down(queryInterface, Sequelize) {

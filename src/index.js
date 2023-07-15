@@ -1,5 +1,6 @@
 const path = require("path");
 const dotenv = require("dotenv");
+const db = require("./models");
 const express = require("express");
 const { authRouter, profileRouter, blogRouter } = require("./routes");
 
@@ -9,6 +10,8 @@ dotenv.config({
 
 const PORT = process.env.PORT || 8000;
 const api = express();
+
+api.use(express.json());
 
 api.use("/auth", authRouter);
 api.use("/profile", profileRouter);
