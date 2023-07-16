@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const router = require("express").Router();
+const { cProfile } = require("../controllers");
 
 router.get("/", (req, res) => {
     res.send("This is Profile router");

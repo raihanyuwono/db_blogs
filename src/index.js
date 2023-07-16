@@ -2,7 +2,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const db = require("./models");
 const express = require("express");
-const { authRouter, profileRouter, blogRouter } = require("./routes");
+const { rAuth, rBlog, rProfile } = require("./routes");
 
 dotenv.config({
     path: path.resolve(__dirname, "../.env"),
@@ -13,9 +13,9 @@ const api = express();
 
 api.use(express.json());
 
-api.use("/auth", authRouter);
-api.use("/profile", profileRouter);
-api.use("/blogs", blogRouter);
+api.use("/auth", rAuth);
+api.use("/blogs", rBlog);
+api.use("/profile", rProfile);
 
 api.listen(PORT, () => {
     console.log(`Server Running at localhost post ${PORT}`);

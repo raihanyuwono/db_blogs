@@ -20,11 +20,15 @@ module.exports = (sequelize, DataTypes) => {
             id_category: DataTypes.INTEGER,
             id_country: DataTypes.INTEGER,
             created_at: DataTypes.DATE,
-            modified_at: DataTypes.DATE,
+            updated_at: DataTypes.DATE,
         },
         {
             sequelize,
             modelName: "blog",
+            underscored: true,
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
+
         }
     );
     return blog;
