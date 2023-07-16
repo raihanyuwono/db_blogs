@@ -74,9 +74,14 @@ async function login(id, password) {
         },
     });
     if (!account) return messages.errorClient("Account not found");
-    if (await bcrypt.compare(password, account["password"]))
-        return messages.success("Login Success", account);
-    else return messages.errorClient("Invalid username or password");
+
+    const compared = await bcrypt.compare(password, account["password"]);
+    if (!compared) return messages.errorClient("Invalid username or password");
+    const payload = { id: account["id"] };
+    const token = jwt.sign(payload, KEY_JWT, {
+        expiresIn: "1h",
+    });
+    return messages.success("Login Success", token);
 }
 
 async function keepLogin(token) {}
@@ -86,14 +91,17 @@ async function forgotPassword(email) {
         where: { email },
     });
     if (!account) return messages.errorServer("Account not exist");
-    
+
     const payload = { id: account["id"] };
     const token = jwt.sign(payload, KEY_JWT, {
         expiresIn: "24h",
     });
     console.log(token);
     // Send token from email
-    return messages.success("Please check your email to reset your password in 24 hours", token);
+    return messages.success(
+        "Please check your email to reset your password in 24 hours",
+        token
+    );
 }
 
 async function resetPassword(token, password) {}
