@@ -12,7 +12,7 @@ const users = db["user"];
 const KEY_JWT = process.env.KEY_JWT;
 const VERIFY_MESSAGE = "Please check your email to verify your account";
 
-db.sequelize.sync({ alter: true });
+// db.sequelize.sync({ alter: true });
 
 async function hashPass(password) {
     const salt = await bcrypt.genSalt(10);

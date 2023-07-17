@@ -1,16 +1,12 @@
 const { sAuth } = require("../services");
 const TRY_AGAIN = { message: "Please try again" };
-
-function responseMessage({ message, data }) {
-    if (!data) return { message };
-    return { message, data };
-}
+const messages = require("../services/messages");
 
 async function register(req, res) {
     try {
         const { username, email, phone, password } = req.body;
         const result = await sAuth.register(username, email, phone, password);
-        res.status(result.status).json(responseMessage(result));
+        res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
@@ -21,7 +17,7 @@ async function verify(req, res) {
         const account = req.account;
         const result = await sAuth.verify(account);
         res.status(result.status).json(
-            responseMessage({ message: result.message })
+            messages.response({ message: result.message })
         );
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
@@ -31,7 +27,7 @@ async function login(req, res) {
     try {
         const { id, password } = req.body;
         const result = await sAuth.login(id, password);
-        res.status(result.status).json(responseMessage(result));
+        res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
@@ -41,7 +37,7 @@ async function keepLogin(req, res) {
     try {
         const account = req.account;
         const result = await sAuth.keepLogin(account);
-        res.status(result.status).json(responseMessage(result));
+        res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
@@ -51,7 +47,7 @@ async function forgotPassword(req, res) {
     try {
         const { email } = req.body;
         const result = await sAuth.forgotPassword(email);
-        res.status(result.status).json(responseMessage(result));
+        res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
@@ -63,7 +59,7 @@ async function resetPassword(req, res) {
         const { password } = req.body;
         const result = await sAuth.resetPassword(account, password);
         res.status(result.status).json(
-            responseMessage({ message: result.message })
+            messages.response({ message: result.message })
         );
     } catch (error) {
         res.status(500).json(TRY_AGAIN);

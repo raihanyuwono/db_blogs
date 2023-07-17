@@ -1,6 +1,5 @@
 const path = require("path");
 const jwt = require("jsonwebtoken");
-const messages = require("../services/messages");
 require("dotenv").config({
     path: path.resolve("../.env"),
 });

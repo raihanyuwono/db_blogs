@@ -1,5 +1,5 @@
 function success(message, data) {
-    console.log()
+    console.log();
     return {
         status: 200,
         message,
@@ -21,8 +21,15 @@ function errorServer(message) {
     };
 }
 
+function response({ message, data }) {
+    if (!data) return { message };
+    if (message === "") return { data };
+    return { message, data };
+}
+
 module.exports = {
     success,
     errorClient,
     errorServer,
+    response,
 };

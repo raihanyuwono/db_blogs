@@ -1,14 +1,12 @@
 const router = require("express").Router();
 const { cProfile } = require("../controllers");
+const { mAuth } = require("../middleware");
 
-router.get("/", (req, res) => {
-    res.send("This is Profile router");
-});
-
-// Change username
-// Change email
-// Change phone
-// Change password
-// Change avatar
+router.get("/", mAuth, cProfile.getUser);
+router.patch("/username", mAuth, cProfile.setUsername);
+router.patch("/email", mAuth, cProfile.setEmail);
+router.patch("/phone", mAuth, cProfile.setPhone);
+router.patch("/password", mAuth, cProfile.setPassword);
+router.patch("/avatar", mAuth, cProfile.setAvatar);
 
 module.exports = router;
