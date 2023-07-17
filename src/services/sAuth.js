@@ -32,7 +32,7 @@ async function updateAccount(id, username, password, message) {
 async function createAccount(username, email, phone, password) {
     console.log(username, email, phone, password);
     return await db.sequelize.transaction(async (t) => {
-        const result = await users.create(
+        return await users.create(
             {
                 username,
                 email,
@@ -41,7 +41,6 @@ async function createAccount(username, email, phone, password) {
             },
             { transaction: t }
         );
-        return messages.success(VERIFY_MESSAGE, result);
     });
 }
 
@@ -54,7 +53,7 @@ async function register(username, email, phone, password) {
     });
     if (account) return messages.errorServer("Account already exist");
 
-    const hashPassword = await hashPass(password)
+    const hashPassword = await hashPass(password);
 
     // if (account["is_verified"])
     //     return updateAccount(
@@ -65,14 +64,16 @@ async function register(username, email, phone, password) {
     //         VERIFY_MESSAGE
     //     );
 
-    return await createAccount(username, email, phone, hashPassword);
+    const result = await createAccount(username, email, phone, hashPassword);
+    const payload = { id: result["id"] };
+    const token = jwt.sign(payload, KEY_JWT, {
+        expiresIn: "24h",
+    })
+    // SEND TOKEN USING EMAIL TO VERIFY
+    return messages.success(VERIFY_MESSAGE, token);
 }
 
-async function verify(token) {
-    if (!token) return messages.errorClient("Unauthorized request");
-
-    const account = jwt.verify(token, KEY_JWT);
-    if (!account) return messages.errorClient("Token has been expired");
+async function verify(account) {
     const result = await users.update(
         { is_verified: true },
         { where: { id: account["id"] } }
@@ -114,9 +115,8 @@ async function forgotPassword(email) {
 
     const payload = { id: account["id"] };
     const token = jwt.sign(payload, KEY_JWT, {
-        expiresIn: "24h",
+        expiresIn: "2h",
     });
-    // console.log(token);
     // Send token from email
     return messages.success(
         "Please check your email to reset your password in 24 hours",

@@ -7,10 +7,10 @@ router.get("/", (req, res) => {
 });
 
 router.post("/register", cAuth.register);
-router.get("/verify/:token", cAuth.verify);
+router.get("/verify", mAuth, cAuth.verify);
 router.post("/login", cAuth.login);
 router.get("/login", mAuth, cAuth.keepLogin);
 router.post("/forgot", cAuth.forgotPassword);
-router.post("/reset", mAuth, cAuth.resetPassword);
+router.patch("/reset", mAuth, cAuth.resetPassword);
 
 module.exports = router;

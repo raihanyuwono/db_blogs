@@ -18,9 +18,11 @@ async function register(req, res) {
 
 async function verify(req, res) {
     try {
-        const { token } = req.params;
-        const result = await sAuth.verify(token);
-        res.status(result.status).json(responseMessage(result));
+        const account = req.account;
+        const result = await sAuth.verify(account);
+        res.status(result.status).json(
+            responseMessage({ message: result.message })
+        );
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
@@ -60,6 +62,9 @@ async function resetPassword(req, res) {
         const account = req.account;
         const { password } = req.body;
         const result = await sAuth.resetPassword(account, password);
+        res.status(result.status).json(
+            responseMessage({ message: result.message })
+        );
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
     }
