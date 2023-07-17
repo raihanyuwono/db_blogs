@@ -11,8 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     blog.init(
         {
-            title: DataTypes.STRING,
-            content: DataTypes.STRING(500),
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            content: {
+                type: DataTypes.STRING(500),
+                allowNull: false,
+            },
             keywords: DataTypes.STRING,
             url_img: DataTypes.TEXT,
             url_video: DataTypes.TEXT,
@@ -26,9 +32,8 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: "blog",
             underscored: true,
-            createdAt: 'created_at',
-            updatedAt: 'updated_at',
-
+            createdAt: "created_at",
+            updatedAt: "updated_at",
         }
     );
     return blog;
