@@ -1,12 +1,16 @@
 const router = require("express").Router();
 const { cBlog } = require("../controllers");
-
-router.get("/", (req, res) => {
-    res.send("This is Blog router");
-});
+const { mAuth } = require("../middleware");
 
 // create blog
-// latest post
-// filter-sort
+router.post("/", mAuth);
+// get blogs -> Can use query to filter and sort
+router.get("/", );
+// get blog
+router.get("/:id", cBlog.getBlog);
+// get categories
+router.get("/categories");
+// get countries
+router.get("/countries");
 
 module.exports = router;
