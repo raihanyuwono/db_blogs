@@ -10,7 +10,6 @@ require("dotenv").config({
 
 const PORT = process.env.PORT || 8000;
 const api = express();
-console.log(PORT);
 
 api.use(express.json());
 

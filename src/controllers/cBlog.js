@@ -2,11 +2,13 @@ const { sBlog } = require("../services");
 const messages = require("../services/messages");
 const TRY_AGAIN = { message: "Please try again" };
 
-async function createBlog(req, res) {}
+async function createBlog(req, res) {
+    
+}
 
 async function getBlogs(req, res) {
     try {
-        const result = await sBlog.getBlogs(req.params);
+        const result = await sBlog.getBlogs(req.query);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(messages.response(TRY_AGAIN));
