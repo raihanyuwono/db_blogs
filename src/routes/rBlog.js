@@ -4,13 +4,12 @@ const { mAuth } = require("../middleware");
 
 // create blog
 router.post("/", mAuth);
+
+router.get("/categories", cBlog.getCategories);
+router.get("/countries", cBlog.getCountries);
+
 // get blogs -> Can use query to filter and sort
-router.get("/", );
-// get blog
+router.get("/", cBlog.getBlogs);
 router.get("/:id", cBlog.getBlog);
-// get categories
-router.get("/categories");
-// get countries
-router.get("/countries");
 
 module.exports = router;
