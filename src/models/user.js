@@ -1,5 +1,4 @@
 "use strict";
-const { v4: uuidv4 } = require("uuid");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class user extends Model {
@@ -12,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             id: {
                 type: DataTypes.UUID,
-                defaultValue: uuidv4(),
+                defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
             },
             username: {
@@ -32,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             avatar: DataTypes.STRING,
-            is_verified: DataTypes.BOOLEAN,
+            is_verified: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,
         },

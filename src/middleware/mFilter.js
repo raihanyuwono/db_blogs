@@ -2,7 +2,7 @@ const multer = require("multer");
 const fs = require("fs");
 
 const defaultPath = "public/images";
-const fileTypes = ["jpg", "jpeg", "png", "gif"];
+const fileTypes = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
 
 const storage = multer.diskStorage({
     destination: (req, res, cb) => {

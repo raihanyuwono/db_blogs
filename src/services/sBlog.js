@@ -11,7 +11,7 @@ const oAttr = { exclude: ["id_user", "id_category", "id_country"] };
 const oInclude = [
     {
         model: users,
-        // as: "author",
+        as: "author",
         attributes: ["username", "avatar"],
     },
     {
@@ -43,14 +43,14 @@ async function getBlogs({
     limit = 10,
 }) {
     const pagination = setPagination(page, limit);
-    const params = {};
+    const oWhere = {};
 
-    if (title) params["title"] = { [Op.like]: `%${title}%` };
-    if (id_category) params["id_category"] = parseInt(id_category);
+    if (title) oWhere["title"] = { [Op.like]: `%${title}%` };
+    if (id_category) oWhere["id_category"] = parseInt(id_category);
 
     const result = await blogs.findAll({
         attributes: oAttr,
-        where: params,
+        where: oWhere,
         order: [["created_at", order]],
         include: oInclude,
         ...pagination,
