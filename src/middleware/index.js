@@ -1,7 +1,9 @@
 const mAuth = require("./mAuth");
-const mUpload = require("./mUpload");
+const mUploadFile = require("./mUploadFile");
+const mValidator = require("./mValidator");
 
 module.exports = {
     mAuth,
-    mUpload,
+    mUploadFile,
+    mValidator,
 };

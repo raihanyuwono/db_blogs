@@ -37,7 +37,9 @@ function setPagination(page, limit) {
     };
 }
 
-async function createBlog() {}
+async function createBlog() {
+    
+}
 
 async function getBlogs({
     title,
