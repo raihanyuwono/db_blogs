@@ -26,6 +26,7 @@ async function getBlog(req, res) {
         const result = await sBlog.getBlog(id);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
+        console.log(error)
         res.status(500).json(TRY_AGAIN);
     }
 }

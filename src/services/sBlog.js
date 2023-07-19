@@ -38,7 +38,7 @@ function setPagination(page, limit) {
 }
 
 async function createBlog() {
-    
+
 }
 
 async function getBlogs({
@@ -70,6 +70,8 @@ async function getBlog(id) {
         where: { id },
         include: oInclude,
     });
+    console.log("SINI")
+
     if (!result) return messages.errorClient("Not Found");
     return messages.success("", result);
 }

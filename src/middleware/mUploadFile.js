@@ -4,7 +4,7 @@ const multer = require("multer");
 
 const defaultPath = "public/images";
 const fileTypes = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
-const maxSize = 1048576; // 1Mb
+const maxSize = 1024 * 1024; // 1Mb
 
 async function createDir(path) {
     const isDirExist = fs.existsSync(path);
