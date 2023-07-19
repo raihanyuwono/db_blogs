@@ -17,6 +17,10 @@ api.use("/auth", rAuth);
 api.use("/blogs", rBlog);
 api.use("/profile", rProfile);
 
+api.get("/", (req, res)=>{
+    res.send("LOL")
+})
+
 api.listen(PORT, () => {
     console.log(`Server Running at localhost post ${PORT}`);
 });

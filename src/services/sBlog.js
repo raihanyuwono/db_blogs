@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, col } = require("sequelize");
 const db = require("../models");
 const messages = require("../services/messages");
 
@@ -7,7 +7,13 @@ const blogs = db["blog"];
 const categories = db["category"];
 const countries = db["country"];
 
-const oAttr = { exclude: ["id_user", "id_category", "id_country"] };
+const oAttr = { 
+    include: [
+        [col("category.name"), "category"],
+        [col("country.name"), "country"],
+    ],
+    exclude: ["id_user", "id_category", "id_country"] 
+};
 const oInclude = [
     {
         model: users,
@@ -16,11 +22,11 @@ const oInclude = [
     },
     {
         model: categories,
-        attributes: ["name"],
+        attributes: [],
     },
     {
         model: countries,
-        attributes: ["name"],
+        attributes: [],
     },
 ];
 
@@ -31,9 +37,7 @@ function setPagination(page, limit) {
     };
 }
 
-async function createBlog() {
-
-}
+async function createBlog() {}
 
 async function getBlogs({
     title,

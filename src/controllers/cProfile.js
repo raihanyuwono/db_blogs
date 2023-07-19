@@ -53,8 +53,14 @@ async function setPassword(req, res) {
     }
 }
 async function setAvatar(req, res) {
-    const account = req.account;
-    res.send("Maintenance");
+    try {
+        const account = req.account;
+        const file = req.file;
+        const result = await sProfile.setAvatar(account, file);        
+        res.status(result.status).json(messages.response(result));
+    } catch (error) {
+        res.status(500).json(TRY_AGAIN);
+    }
 }
 
 module.exports = {

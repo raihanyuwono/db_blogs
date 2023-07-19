@@ -1,3 +1,4 @@
+const fs = require("fs");
 const db = require("../models");
 const messages = require("../services/messages");
 const bcrypt = require("bcrypt");
@@ -19,7 +20,7 @@ async function getUser(account) {
 
 async function setUsername(account, username) {
     const { id } = account;
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { username },
             { where: { id }, transaction: t }
@@ -30,7 +31,7 @@ async function setUsername(account, username) {
 
 async function setEmail(account, email) {
     const { id } = account;
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { email },
             { where: { id }, transaction: t }
@@ -41,7 +42,7 @@ async function setEmail(account, email) {
 
 async function setPhone(account, phone) {
     const { id } = account;
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { phone },
             { where: { id }, transaction: t }
@@ -54,7 +55,7 @@ async function setPassword(account, password) {
     const { id } = account;
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { password: hashPassword },
             { where: { id }, transaction: t }
@@ -62,8 +63,20 @@ async function setPassword(account, password) {
         return messages.success("Password has been changed");
     });
 }
-async function setAvatar(account) {
+async function setAvatar(account, file) {
+    const { id } = account;
+    const { path } = file;
+    const oldAvatar = await users.findOne({ where: { id } });
+    return await db.sequelize.transaction(async function (t) {
+        const result = await users.update(
+            { avatar: path },
+            { where: { id }, transaction: t }
+        );
+        
+        if(oldAvatar["avatar"]) await fs.promises.unlink(oldAvatar["avatar"]);
 
+        return messages.success("Profile image has been changed");
+    });
 }
 
 module.exports = {

@@ -20,7 +20,7 @@ async function hashPass(password) {
 }
 
 async function updateAccount(id, username, password, message) {
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { username, password },
             { where: { id }, transaction: t }
@@ -31,7 +31,7 @@ async function updateAccount(id, username, password, message) {
 
 async function createAccount(username, email, phone, password) {
     console.log(username, email, phone, password);
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         return await users.create(
             {
                 username,
@@ -46,11 +46,12 @@ async function createAccount(username, email, phone, password) {
 
 async function register(username, email, phone, password) {
     if (!username || !email || !phone || !password)
-        messages.errorClient("Please fill all the data");
-
+    messages.errorClient("Please fill all the data");
+    
     const account = await users.findOne({
         where: { [Op.or]: [{ username }, { email }, { phone }] },
     });
+    // console.log("sREGISTER")
     if (account) return messages.errorServer("Account already exist");
 
     const hashPassword = await hashPass(password);
@@ -127,7 +128,7 @@ async function forgotPassword(email) {
 async function resetPassword(account, password) {
     const id = account["id"];
     const hashPassword = await hashPass(password);
-    return await db.sequelize.transaction(async (t) => {
+    return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { password: hashPassword },
             { where: { id }, transaction: t }

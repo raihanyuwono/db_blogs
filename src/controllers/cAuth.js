@@ -6,6 +6,7 @@ async function register(req, res) {
     try {
         const { username, email, phone, password } = req.body;
         const result = await sAuth.register(username, email, phone, password);
+        // console.log("REGISTER")
         res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);
