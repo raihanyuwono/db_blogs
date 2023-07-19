@@ -34,8 +34,10 @@ const storage = multer.diskStorage({
 
 function fileFilter(req, file, cb) {
     const fileType = getType(file);
-    if (fileTypes.includes(fileType)) cb(null, true);
-    else cb(new Error("Invalid file format"));
+    const fileSize = parseInt(req.headers["content-length"]) // get the size
+    if (!fileTypes.includes(fileType)) return cb(new Error("Invalid file format"));
+    if (fileSize > maxSize) return cb(new Error("File too large, max 1 MB"));
+    return cb(null, true);
 }
 
 module.exports = multer({

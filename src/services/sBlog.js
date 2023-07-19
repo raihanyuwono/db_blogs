@@ -9,11 +9,12 @@ const countries = db["country"];
 
 const oAttr = { 
     include: [
-        [col("category.name"), "category"],
-        [col("country.name"), "country"],
+        [col("category.name"), "_category"],
+        [col("country.name"), "_country"],
     ],
     exclude: ["id_user", "id_category", "id_country"] 
 };
+
 const oInclude = [
     {
         model: users,
