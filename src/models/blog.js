@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             this.hasMany(models["like"], { foreignKey: "id_blog" });
             this.belongsTo(models["user"], { as:"author", foreignKey: "id_user" });
-            this.belongsTo(models["category"], { foreignKey: "id_category" });
-            this.belongsTo(models["country"], { foreignKey: "id_country" });
+            this.belongsTo(models["category"], { as:"_category",foreignKey: "id_category" });
+            this.belongsTo(models["country"], { as: "_country", foreignKey: "id_country" });
         }
     }
     blog.init(
