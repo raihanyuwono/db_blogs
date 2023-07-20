@@ -4,7 +4,7 @@ const TRY_AGAIN = { message: "Please try again" };
 
 async function createBlog(req, res) {
     try {
-        const result = await sBlog.getBlogs(req);
+        const result = await sBlog.createBlog(req);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(messages.response(TRY_AGAIN));

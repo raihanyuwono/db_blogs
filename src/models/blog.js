@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             keywords: DataTypes.STRING,
-            url_img: DataTypes.TEXT,
+            url_img: {
+                type: DataTypes.TEXT,
+                unique: true,
+            },
             url_video: DataTypes.TEXT,
             id_user: DataTypes.UUID,
             id_category: DataTypes.INTEGER,
@@ -34,6 +37,9 @@ module.exports = (sequelize, DataTypes) => {
             underscored: true,
             createdAt: "created_at",
             updatedAt: "updated_at",
+            indexes: [
+                {unique: true, fields:["url_img"]}
+            ]
         }
     );
     return blog;

@@ -30,7 +30,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            avatar: DataTypes.STRING,
+            avatar: {
+                type: DataTypes.TEXT,
+                unique: true,
+            },
             is_verified: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
@@ -48,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
                 { unique: true, fields: ["username"] },
                 { unique: true, fields: ["email"] },
                 { unique: true, fields: ["phone"] },
+                { unique: true, fields: ["avatar"] },
             ],
         }
     );

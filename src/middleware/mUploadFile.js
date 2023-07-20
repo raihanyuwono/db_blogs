@@ -4,7 +4,7 @@ const multer = require("multer");
 
 const defaultPath = "public/images";
 const fileTypes = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
-const maxSize = 1024 * 1024; // 1Mb
+const maxSize = 1 * 1024 * 1024; // 1Mb
 
 async function createDir(path) {
     const isDirExist = fs.existsSync(path);
@@ -21,13 +21,14 @@ function getType(file) {
 
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        const path = `${defaultPath}/${file.fieldname}`;
+        const folder = file.fieldname === "thumbnail" ? "blog" : file.fieldname;
+        const path = `${defaultPath}/${folder}`;
         await createDir(path);
         cb(null, path);
     },
     filename: function (req, file, cb) {
         const fileType = getType(file);
-        const fileName = `${Date.now()}-${uuidv4()}.${fileType}`;
+        const fileName = `${uuidv4()}.${fileType}`;
         cb(null, fileName);
     },
 });

@@ -7,12 +7,12 @@ const blogs = db["blog"];
 const categories = db["category"];
 const countries = db["country"];
 
-const oAttr = { 
+const oAttr = {
     include: [
         [col("_category.name"), "category"],
         [col("_country.name"), "country"],
     ],
-    exclude: ["id_user", "id_category", "id_country"] 
+    exclude: ["id_user", "id_category", "id_country"],
 };
 
 const oInclude = [
@@ -23,12 +23,12 @@ const oInclude = [
     },
     {
         model: categories,
-        as:"_category",
+        as: "_category",
         attributes: [],
     },
     {
         model: countries,
-        as:"_country",
+        as: "_country",
         attributes: [],
     },
 ];
@@ -40,8 +40,27 @@ function setPagination(page, limit) {
     };
 }
 
-async function createBlog() {
-
+async function createBlog(req) {
+    const { id } = req.account;
+    const { path } = req.file;
+    const { title, content, keywords, url_video, id_category, id_country } =
+        req.body;
+    return await db.sequelize.transaction(async function (t) {
+        const result = await blogs.create(
+            {
+                title,
+                content,
+                keywords,
+                url_img: path,
+                url_video,
+                id_category,
+                id_country,
+                id_user: id,
+            },
+            { transaction: t }
+        );
+        return messages.success("Blog has been created");
+    });
 }
 
 async function getBlogs({
@@ -73,7 +92,7 @@ async function getBlog(id) {
         where: { id },
         include: oInclude,
     });
-    console.log("SINI")
+    console.log("SINI");
 
     if (!result) return messages.errorClient("Not Found");
     return messages.success("", result);
