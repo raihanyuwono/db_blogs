@@ -59,7 +59,7 @@ const vLoginFields = [vId, vPassword];
 
 function vResult(req, res, next) {
     const { errors } = validationResult(req);
-    console.log(errors);
+    // console.log(errors);
     if (errors.length > 0)
         return res.status(400).json(
             messages.response({

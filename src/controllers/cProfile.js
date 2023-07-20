@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { sProfile } = require("../services");
 const messages = require("../services/messages");
 const TRY_AGAIN = { message: "Please try again" };
@@ -53,12 +54,13 @@ async function setPassword(req, res) {
     }
 }
 async function setAvatar(req, res) {
+    const file = req.file;
     try {
         const account = req.account;
-        const file = req.file;
-        const result = await sProfile.setAvatar(account, file);        
+        const result = await sProfile.setAvatar(account, file);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
+        await fs.promises.unlink(file.path)
         res.status(500).json(TRY_AGAIN);
     }
 }

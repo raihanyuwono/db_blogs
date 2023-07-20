@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { sBlog } = require("../services");
 const messages = require("../services/messages");
 const TRY_AGAIN = { message: "Please try again" };
@@ -7,6 +8,7 @@ async function createBlog(req, res) {
         const result = await sBlog.createBlog(req);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
+        await fs.promises.unlink(req.file.path);
         res.status(500).json(messages.response(TRY_AGAIN));
     }
 }
