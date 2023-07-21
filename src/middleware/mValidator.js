@@ -1,13 +1,5 @@
-// const db = require("../models");
 const { body, validationResult } = require("express-validator");
 const messages = require("../services/messages");
-
-// const users = db["user"];
-
-// const isUsernameReady = body("username").custom((value) => {
-//     const account = users.findOne({ where: { username: value } });
-
-// });
 
 const vUsername = body("username")
     .notEmpty()
@@ -26,6 +18,23 @@ const vEmail = body("email")
 
 const vPassword = body("password").notEmpty().withMessage("Password is empty");
 
+const vSetPassword = vPassword
+    .bail()
+    .isStrongPassword({
+        minLength: 6,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+    })
+    .withMessage(
+        "Password length min 8, uppercase min 1, number min 1, symbol min 1"
+    );
+
+const vConfirmPassword = body("confirm_password")
+    .notEmpty()
+    .withMessage("Confirm Password is empty");
+
 const vPhone = body("phone")
     .notEmpty()
     .withMessage("Phone is Empty")
@@ -33,29 +42,13 @@ const vPhone = body("phone")
     .isMobilePhone()
     .withMessage("Invalid phone number");
 
-const vId = body("id")
-    .notEmpty()
-    .withMessage("ID is empty")
+const vId = body("id").notEmpty().withMessage("ID is empty");
 
-const vRegistrationFields = [
-    vEmail,
-    vUsername,
-    vPhone,
-    vPassword
-        .bail()
-        .isStrongPassword({
-            minLength: 6,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-        })
-        .withMessage(
-            "Password length min 8, uppercase min 1, number min 1, symbol min 1"
-        ),
-];
+const vRegistrationFields = [vEmail, vUsername, vPhone, vSetPassword];
 
 const vLoginFields = [vId, vPassword];
+
+const vResetPasswordFields = [vSetPassword, vConfirmPassword];
 
 function vResult(req, res, next) {
     const { errors } = validationResult(req);
@@ -73,5 +66,6 @@ function vResult(req, res, next) {
 module.exports = {
     vRegistrationFields,
     vLoginFields,
+    vResetPasswordFields,
     vResult,
 };

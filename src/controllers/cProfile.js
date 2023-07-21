@@ -23,6 +23,7 @@ async function setUsername(req, res) {
         res.status(500).json(TRY_AGAIN);
     }
 }
+
 async function setEmail(req, res) {
     try {
         const account = req.account;
@@ -33,6 +34,7 @@ async function setEmail(req, res) {
         res.status(500).json(TRY_AGAIN);
     }
 }
+
 async function setPhone(req, res) {
     try {
         const account = req.account;
@@ -43,6 +45,7 @@ async function setPhone(req, res) {
         res.status(500).json(TRY_AGAIN);
     }
 }
+
 async function setPassword(req, res) {
     try {
         const account = req.account;
@@ -53,6 +56,7 @@ async function setPassword(req, res) {
         res.status(500).json(TRY_AGAIN);
     }
 }
+
 async function setAvatar(req, res) {
     const file = req.file;
     try {

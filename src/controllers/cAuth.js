@@ -1,6 +1,7 @@
 const { sAuth } = require("../services");
-const TRY_AGAIN = { message: "Please try again" };
 const messages = require("../services/messages");
+const TRY_AGAIN = { message: "Please try again" };
+
 
 async function register(req, res) {
     try {
@@ -57,8 +58,8 @@ async function forgotPassword(req, res) {
 async function resetPassword(req, res) {
     try {
         const account = req.account;
-        const { password } = req.body;
-        const result = await sAuth.resetPassword(account, password);
+        const { password, confirm_password } = req.body;
+        const result = await sAuth.resetPassword(account, password, confirm_password);
         res.status(result.status).json(
             messages.response({ message: result.message })
         );
