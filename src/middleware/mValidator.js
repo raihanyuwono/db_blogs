@@ -71,6 +71,7 @@ function vResult(req, res, next) {
 
 module.exports = {
     vUsername,
+    vEmail,
     vPhone,
     vRegistrationFields,
     vLoginFields,
