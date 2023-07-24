@@ -8,7 +8,7 @@ require("dotenv").config({
 });
 
 const db = require("../models");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const users = db["user"];
 const KEY_JWT = process.env.KEY_JWT;
 const VERIFY_MESSAGE = "Please check your email to verify your account";
@@ -21,18 +21,32 @@ async function hashPass(password) {
     return await bcrypt.hash(password, salt);
 }
 
-async function updateAccount(id, username, password, message) {
+async function isExist(username, email, phone) {
+    const checkAccount = await users.findAll({
+        where: {
+            [Op.or]: [{ username }, { email }, { phone }],
+        },
+    });
+    if (checkAccount.length === 0) return false;
+    if (
+        checkAccount.length === 1 &&
+        checkAccount[0]["email"] === email &&
+        !checkAccount[0]["is_verified"]
+    )
+        return checkAccount[0];
+    return true;
+}
+
+async function updateRegistration(id, username, phone, password) {
     return await db.sequelize.transaction(async function (t) {
-        const result = await users.update(
-            { username, password },
+        return await users.update(
+            { username, phone, password },
             { where: { id }, transaction: t }
         );
-        return messages.success(message, result);
     });
 }
 
 async function createAccount(username, email, phone, password) {
-    // console.log(username, email, phone, password);
     return await db.sequelize.transaction(async function (t) {
         return await users.create(
             {
@@ -54,25 +68,35 @@ async function register(username, email, phone, password) {
     if (!username || !email || !phone || !password)
         messages.errorClient("Please fill all the data");
 
-    const account = await users.findOne({
-        where: { [Op.or]: [{ username }, { email }, { phone }] },
-    });
-    if (account) return messages.errorServer("Account already exist");
-
+    const account = await isExist(username, email, phone);
+    if (account === true) return messages.errorServer("Account already exist");
     const hashPassword = await hashPass(password);
 
-    const result = await createAccount(username, email, phone, hashPassword);
-    const payload = { id: result["id"] };
+    let result;
+    if (account)
+        result = await updateRegistration(
+            account["id"],
+            username,
+            phone,
+            hashPassword
+        );
+    else result = await createAccount(username, email, phone, hashPassword);
+
+    const payload = { id: account ? account["id"] : result["id"] };
     const token = jwt.sign(payload, KEY_JWT, {
         expiresIn: "24h",
     });
 
     const content = {
-        username: result["username"],
+        username: account ? account["username"] : result["username"],
         context: "VERIFY",
         redirect: `${BASE_REDIRECT}/verify/${token}`,
     };
-    await sendMail(result["email"], "Verify Your Account", content);
+    await sendMail(
+        account ? account["email"] : result["email"],
+        "Verify Your Account",
+        content
+    );
 
     return messages.success(VERIFY_MESSAGE);
 }

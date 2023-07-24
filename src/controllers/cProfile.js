@@ -49,8 +49,8 @@ async function setPhone(req, res) {
 async function setPassword(req, res) {
     try {
         const account = req.account;
-        const { password } = req.body;
-        const result = await sProfile.setPassword(account, password);
+        const { old_password, password, confirm_password } = req.body;
+        const result = await sProfile.setPassword(account, old_password, password, confirm_password);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
         res.status(500).json(TRY_AGAIN);

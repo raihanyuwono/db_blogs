@@ -1,35 +1,18 @@
-const fs = require("fs");
 const db = require("../models");
 const messages = require("../services/messages");
 const bcrypt = require("bcrypt");
 const users = db["user"];
 const { sendMail } = require("../helpers/transporter");
-const handlebars = require("handlebars");
 
 const SUBJECT_CHANGES = "Notification Changes";
 
-async function findUser(id) {
+async function getAccount(id) {
     return await users.findOne({ where: { id } });
-}
-
-async function emailContent({username, attribute}) {
-    const template = await fs.promises.readFile(
-        path.resolve(__dirname, "../notifications/changes.html"),
-        "utf-8"
-    );
-    const tempCompile = handlebars.compile(template);
-    const tempResult = tempCompile({
-        username,
-        attribute,
-    });
-    return tempResult;
 }
 
 async function getUser(account) {
     const { id } = account;
-    const result = await users.findOne({
-        where: { id },
-    });
+    const result = await getAccount(id);
     const user = {
         username: result["username"],
         email: result["email"],
@@ -41,17 +24,20 @@ async function getUser(account) {
 
 async function setUsername(account, username) {
     const { id } = account;
-    const beforeChange = findUser(id);
+    
+    const isExist = await users.findOne({ where: { username } });
+    if(isExist) return messages.errorServer("Username has been used");
+    account = await getAccount(id);
     return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { username },
             { where: { id }, transaction: t }
         );
         const content = {
-            username: beforeChange["username"],
-            attribute: "username",
+            username,
+            context: "username",
         };
-        await sendMail(result["email"], SUBJECT_CHANGES, await emailContent(content));
+        await sendMail(account["email"], SUBJECT_CHANGES, content);
         return messages.success("Username has been changed");
     });
 }
@@ -69,27 +55,44 @@ async function setEmail(account, email) {
 
 async function setPhone(account, phone) {
     const { id } = account;
+    
+    const isExist = await users.findOne({ where: { phone } });
+    if(isExist) return messages.errorServer("Phone has been used");
+    account = await getAccount(id);
     return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { phone },
             { where: { id }, transaction: t }
         );
+        const content = {
+            username: account["username"],
+            context: "phone",
+        };
+        await sendMail(account["email"], SUBJECT_CHANGES, content);
         return messages.success("Phone has been changed");
-    });
+    });   
 }
 
-async function setPassword(account, password) {
+async function setPassword(account, old_password, password, confirm_password) {
     const { id } = account;
+    account = await getAccount(id);
+    const compared = await bcrypt.compare(old_password, account["password"]);
+    console.log(compared);
+    if(!compared) return messages.errorClient("Wrong password");
+    if(password !== confirm_password) return messages.errorClient("Password must be same");    
+
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
+    
     return await db.sequelize.transaction(async function (t) {
         const result = await users.update(
             { password: hashPassword },
             { where: { id }, transaction: t }
         );
         return messages.success("Password has been changed");
-    });
+    });   
 }
+
 async function setAvatar(account, file) {
     const { id } = account;
     const { path } = file;

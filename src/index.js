@@ -1,5 +1,4 @@
 const path = require("path");
-const db = require("./models");
 const express = require("express");
 const { rAuth, rBlog, rProfile } = require("./routes");
 const messages = require("./services/messages");
@@ -16,6 +15,8 @@ api.use(express.json());
 api.use("/auth", rAuth);
 api.use("/blogs", rBlog);
 api.use("/profile", rProfile);
+
+api.use("/public", express.static(path.resolve(__dirname, '../public')));
 
 api.listen(PORT, () => {
     console.log(`Server Running at localhost post ${PORT}`);

@@ -40,8 +40,15 @@ function setPagination(page, limit) {
     };
 }
 
+async function isVerified(id) {
+    const result = await users.findOne({ where: { id } });
+    return result["is_verified"];
+}
+
 async function createBlog(req) {
     const { id } = req.account;
+    if (await isVerified(id))
+        return messages.errorServer("Your account haven't been verified yet");
     const { path } = req.file;
     const { title, content, keywords, url_video, id_category, id_country } =
         req.body;

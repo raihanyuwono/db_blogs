@@ -17,6 +17,7 @@ const vEmail = body("email")
     .withMessage("Email is not valid");
 
 const vPassword = body("password").notEmpty().withMessage("Password is empty");
+const vOldPassword = body("old_password").notEmpty().withMessage("Old password is empty");
 
 const vSetPassword = vPassword
     .bail()
@@ -50,6 +51,11 @@ const vLoginFields = [vId, vPassword];
 
 const vResetPasswordFields = [vSetPassword, vConfirmPassword];
 
+const vChangePasswordFields = [
+    vOldPassword,
+    ...vResetPasswordFields
+]
+
 function vResult(req, res, next) {
     const { errors } = validationResult(req);
     // console.log(errors);
@@ -64,8 +70,11 @@ function vResult(req, res, next) {
 }
 
 module.exports = {
+    vUsername,
+    vPhone,
     vRegistrationFields,
     vLoginFields,
     vResetPasswordFields,
+    vChangePasswordFields,
     vResult,
 };
