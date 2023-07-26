@@ -5,7 +5,7 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.bulkInsert("blogs", [
             {
-                title: "The Wolrd Lagacy - Part 1: Origins of the World Legacy",
+                title: "The World Legacy - Part 1: Origins of the World Legacy",
                 content: `The World Legacy story in the Yu-Gi-Oh! lore revolves around a powerful ancient civilization that existed in the distant past. This civilization harnessed extraordinary powers through the use of magical artifacts known as World Legacies. These Legacies were immensely powerful, capable of shaping reality itself. However, their usage also brought about the civilization's downfall, as they attracted the attention of dark forces seeking to exploit their power.`,
                 keywords:
                     "Fiksi;WorldLegacy;Lore;Yu-Gi-Oh!;Crusadia;Knightmare;Mekk-Knight;Krawler;Orcust",
@@ -18,7 +18,7 @@ module.exports = {
                 updated_at: new Date(),
             },
             {
-                title: "The Wolrd Lagacy - Part 2: The Battle of Mekk-Knights and Krawlers",
+                title: "The World Legacy - Part 2: The Battle of Mekk-Knights and Krawlers",
                 content: `In a bid to safeguard the World Legacies, the Mekk-Knights, a group of powerful warriors, engaged in a fierce battle against the Krawlers, an underground-dwelling insectoid faction. The Mekk-Knights, led by Morningstar, employed their formidable abilities and summoned their mechanical allies to confront the Krawlers' relentless onslaught. The clash between these rival factions was intense, as they fought for control of the Legacies and the fate of the ancient civilization hung in the balance.`,
                 keywords:
                     "Fiksi;WorldLegacy;Lore;Yu-Gi-Oh!;Crusadia;Knightmare;Mekk-Knight;Krawler;Orcust",

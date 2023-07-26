@@ -7,6 +7,9 @@ router.post("/", mAuth, mUploadFile.single("thumbnail"), cBlog.createBlog);
 router.get("/categories", cBlog.getCategories);
 router.get("/countries", cBlog.getCountries);
 
+router.get("/like/:id", cBlog.getLike);
+router.post("/like", mAuth, cBlog.addLike);
+
 router.get("/", cBlog.getBlogs);
 router.get("/:id", cBlog.getBlog);
 

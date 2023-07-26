@@ -6,6 +6,7 @@ const users = db["user"];
 const blogs = db["blog"];
 const categories = db["category"];
 const countries = db["country"];
+const likes = db["like"];
 
 const oAttr = {
     include: [
@@ -47,7 +48,8 @@ async function isVerified(id) {
 
 async function createBlog(req) {
     const { id } = req.account;
-    if (await isVerified(id))
+    const is_verified = await isVerified(id);
+    if (!is_verified)
         return messages.errorServer("Your account haven't been verified yet");
     const { path } = req.file;
     const { title, content, keywords, url_video, id_category, id_country } =
@@ -99,10 +101,48 @@ async function getBlog(id) {
         where: { id },
         include: oInclude,
     });
-    console.log("SINI");
 
     if (!result) return messages.errorClient("Not Found");
     return messages.success("", result);
+}
+
+async function getLike(id) {
+    const result = await likes.findAll({
+        attributes: {
+            exclude: ["id", "id_user", "created_at"],
+        },
+        where: { id_blog: id },
+        include: [
+            {
+                model: users,
+                attributes: ["username", "avatar"],
+            },
+        ],
+    });
+    return messages.success("", result);
+}
+
+async function addLike(account, id_blog) {
+    const { id } = account;
+    const is_verified = await isVerified(id);
+    if (!is_verified)
+        return messages.errorServer("Your account haven't been verified yet");
+
+    const isExist = await likes.findOne({
+        where: { [Op.and]: [{ id_user: id }, { id_blog }] },
+    });
+
+    if (isExist) return messages.errorServer("You already like this blog");
+    return await db.sequelize.transaction(async function (t) {
+        const result = await likes.create(
+            {
+                id_user: id,
+                id_blog,
+            },
+            { transaction: t }
+        );
+        return messages.success("Like has been added");
+    });
 }
 
 async function getCategories() {
@@ -119,6 +159,8 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlog,
+    getLike,
+    addLike,
     getCategories,
     getCountries,
 };

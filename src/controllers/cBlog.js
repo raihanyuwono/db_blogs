@@ -28,7 +28,29 @@ async function getBlog(req, res) {
         const result = await sBlog.getBlog(id);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
-        console.log(error)
+        res.status(500).json(TRY_AGAIN);
+    }
+}
+
+async function getLike(req, res) {
+    try {
+        const { id } = req.params;
+        const result = await sBlog.getLike(id);
+        res.status(result.status).json(messages.response(result));
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(TRY_AGAIN);
+    }
+}
+
+async function addLike(req, res) {
+    try {
+        const { account } = req;
+        const {id_blog} = req.body;
+        const result = await sBlog.addLike(account, id_blog);
+        res.status(result.status).json(messages.response(result));
+    } catch (error) {
+        console.log(error);
         res.status(500).json(TRY_AGAIN);
     }
 }
@@ -55,6 +77,8 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlog,
+    getLike,
+    addLike,
     getCategories,
     getCountries,
 };

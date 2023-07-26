@@ -101,7 +101,7 @@ async function setPassword(account, old_password, password, confirm_password) {
     const { id } = account;
     account = await getAccount(id);
     const compared = await bcrypt.compare(old_password, account["password"]);
-    // console.log(compared);
+    
     if (!compared) return messages.errorClient("Wrong password");
     if (password !== confirm_password)
         return messages.errorClient("Password must be same");

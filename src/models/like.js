@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     class like extends Model {
         static associate(models) {
             this.belongsTo(models["user"], { foreignKey: "id_user" });
-            this.belongsTo(models["blog"], { foreignKey: "id_blogs" });
+            this.belongsTo(models["blog"], { foreignKey: "id_blog" });
         }
     }
     like.init(
@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: "like",
             underscored: true,
+            createdAt: "created_at",
             updatedAt: false,
         }
     );

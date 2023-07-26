@@ -116,8 +116,6 @@ async function login(id, password) {
         },
     });
     if (!account) return messages.errorClient("Account not found");
-    if (!account["is_verified"])
-        return messages.errorServer("Your account haven't been verified yet");
 
     const compared = await bcrypt.compare(password, account["password"]);
     if (!compared) return messages.errorClient("Invalid username or password");
@@ -145,7 +143,7 @@ async function forgotPassword(email) {
 
     const payload = { id: account["id"] };
     const token = jwt.sign(payload, KEY_JWT, {
-        expiresIn: "2h",
+        expiresIn: "4h",
     });
 
     const content = {
