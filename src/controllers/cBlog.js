@@ -32,6 +32,17 @@ async function getBlog(req, res) {
     }
 }
 
+async function delBlog(req, res) {
+    try {
+        const { account } = req;
+        const { id } = req.params;
+        const result = await sBlog.delBlog(account, id);
+        res.status(result.status).json(messages.response(result));
+    } catch (error) {
+        res.status(500).json(TRY_AGAIN);
+    }
+}
+
 async function getLike(req, res) {
     try {
         const { id } = req.params;
@@ -46,8 +57,19 @@ async function getLike(req, res) {
 async function addLike(req, res) {
     try {
         const { account } = req;
-        const {id_blog} = req.body;
+        const { id_blog } = req.body;
         const result = await sBlog.addLike(account, id_blog);
+        res.status(result.status).json(messages.response(result));
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(TRY_AGAIN);
+    }
+}
+async function delLike(req, res) {
+    try {
+        const { account } = req;
+        const { id } = req.params;
+        const result = await sBlog.delLike(account, id);
         res.status(result.status).json(messages.response(result));
     } catch (error) {
         console.log(error);
@@ -77,8 +99,10 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlog,
+    delBlog,
     getLike,
     addLike,
+    delLike,
     getCategories,
     getCountries,
 };

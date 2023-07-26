@@ -66,7 +66,7 @@ async function getAccount(id) {
 
 async function register(username, email, phone, password) {
     if (!username || !email || !phone || !password)
-        messages.errorClient("Please fill all the data");
+        return messages.errorClient("Please fill all the data");
 
     const account = await isExist(username, email, phone);
     if (account === true) return messages.errorServer("Account already exist");

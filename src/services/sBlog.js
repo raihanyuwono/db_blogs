@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { Op, col } = require("sequelize");
 const db = require("../models");
 const messages = require("../services/messages");
@@ -15,7 +16,6 @@ const oAttr = {
     ],
     exclude: ["id_user", "id_category", "id_country"],
 };
-
 const oInclude = [
     {
         model: users,
@@ -71,7 +71,6 @@ async function createBlog(req) {
         return messages.success("Blog has been created");
     });
 }
-
 async function getBlogs({
     title,
     id_category,
@@ -81,7 +80,6 @@ async function getBlogs({
 }) {
     const pagination = setPagination(page, limit);
     const oWhere = {};
-
     if (title) oWhere["title"] = { [Op.like]: `%${title}%` };
     if (id_category) oWhere["id_category"] = parseInt(id_category);
 
@@ -94,18 +92,34 @@ async function getBlogs({
     });
     return messages.success("", result);
 }
-
 async function getBlog(id) {
     const result = await blogs.findOne({
         attributes: oAttr,
         where: { id },
         include: oInclude,
     });
-
     if (!result) return messages.errorClient("Not Found");
     return messages.success("", result);
 }
+async function delBlog(account, id_blog) {
+    const { id } = account;
+    const is_verified = await isVerified(id);
+    if (!is_verified)
+        return messages.errorServer("Your account haven't been verified yet");
+    const isExist = await blogs.findOne({ where: { id: id_blog } });
+    if (!isExist) return messages.errorServer("Not Found");
+    if (isExist["id_user"] !== id)
+        return messages.errorServer("You are not the author of this blog");
 
+    return await db.sequelize.transaction(async function (t) {
+        const result = await blogs.destroy(
+            { where: {id: id_blog,} },
+            { transaction: t }
+        );
+        await fs.promises.unlink(isExist["url_img"]);
+        return messages.success("Blog has been deleted");
+    });
+}
 async function getLike(id) {
     const result = await likes.findAll({
         attributes: {
@@ -121,13 +135,11 @@ async function getLike(id) {
     });
     return messages.success("", result);
 }
-
 async function addLike(account, id_blog) {
     const { id } = account;
     const is_verified = await isVerified(id);
     if (!is_verified)
         return messages.errorServer("Your account haven't been verified yet");
-
     const isExist = await likes.findOne({
         where: { [Op.and]: [{ id_user: id }, { id_blog }] },
     });
@@ -144,23 +156,44 @@ async function addLike(account, id_blog) {
         return messages.success("Like has been added");
     });
 }
+async function delLike(account, id_blog) {
+    const { id } = account;
+    const is_verified = await isVerified(id);
+    if (!is_verified)
+        return messages.errorServer("Your account haven't been verified yet");
+    const isExist = await likes.findOne({
+        where: { [Op.and]: [{ id_user: id }, { id_blog }] },
+    });
+    if (!isExist) return messages.errorServer("Not Found");
 
+    return await db.sequelize.transaction(async function (t) {
+        const result = await likes.destroy(
+            {
+                where: {
+                    [Op.and]: [{ id_user: id }, { id_blog }],
+                },
+            },
+            { transaction: t }
+        );
+        return messages.success("Like has been removed");
+    });
+}
 async function getCategories() {
     const result = await categories.findAll();
     return messages.success("", result);
 }
-
 async function getCountries() {
     const result = await countries.findAll();
     return messages.success("", result);
 }
-
 module.exports = {
     createBlog,
     getBlogs,
     getBlog,
+    delBlog,
     getLike,
     addLike,
+    delLike,
     getCategories,
     getCountries,
 };
