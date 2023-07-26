@@ -10,11 +10,11 @@ function mAuth(req, res, next) {
     try {
         let token = req.headers.authorization;
         if (!token) return res.status(400).json({ message: "Access denied" });
-
+        
         token = token.split(" ")[1];
         if (!token || token == "null")
             return res.status(400).json({ message: "Unauthorized request" });
-
+            
         const account = jwt.verify(token, KEY_JWT);
 
         if (!account)
