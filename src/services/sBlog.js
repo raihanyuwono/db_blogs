@@ -2,7 +2,6 @@ const fs = require("fs");
 const { Op, col } = require("sequelize");
 const db = require("../models");
 const messages = require("../services/messages");
-
 const users = db["user"];
 const blogs = db["blog"];
 const categories = db["category"];
@@ -33,14 +32,12 @@ const oInclude = [
         attributes: [],
     },
 ];
-
 function setPagination(page, limit) {
     return {
         offset: (page - 1) * limit,
         limit: parseInt(limit),
     };
 }
-
 async function isVerified(id) {
     const result = await users.findOne({ where: { id } });
     return result["is_verified"];
@@ -82,6 +79,7 @@ async function getBlogs({
     const oWhere = {};
     if (title) oWhere["title"] = { [Op.like]: `%${title}%` };
     if (id_category) oWhere["id_category"] = parseInt(id_category);
+    const counter = await blogs.count();
 
     const result = await blogs.findAll({
         attributes: oAttr,
@@ -90,7 +88,10 @@ async function getBlogs({
         include: oInclude,
         ...pagination,
     });
-    return messages.success("", result);
+    return messages.success("", {
+        pages: Math.ceil(counter / limit),
+        blogs: result,
+    });
 }
 async function getBlog(id) {
     const result = await blogs.findOne({
@@ -113,7 +114,7 @@ async function delBlog(account, id_blog) {
 
     return await db.sequelize.transaction(async function (t) {
         const result = await blogs.destroy(
-            { where: {id: id_blog,} },
+            { where: { id: id_blog } },
             { transaction: t }
         );
         await fs.promises.unlink(isExist["url_img"]);
