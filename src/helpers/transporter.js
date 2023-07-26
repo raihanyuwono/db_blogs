@@ -2,8 +2,7 @@ const fs = require("fs");
 const handlebars = require("handlebars");
 const nodemailer = require("nodemailer");
 const path = require("path");
-const dotenv = require("dotenv");
-dotenv.config({
+require("dotenv").config({
     path: path.resolve(__dirname, "../../.env"),
 });
 

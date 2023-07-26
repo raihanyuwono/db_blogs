@@ -14,8 +14,6 @@ const KEY_JWT = process.env.KEY_JWT;
 const VERIFY_MESSAGE = "Please check your email to verify your account";
 const BASE_REDIRECT = "http://localhost:3000";
 
-// db.sequelize.sync({ alter: true });
-
 async function hashPass(password) {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);
