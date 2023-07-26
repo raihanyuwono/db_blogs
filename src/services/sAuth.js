@@ -100,6 +100,8 @@ async function register(username, email, phone, password) {
 }
 
 async function verify(account) {
+    const checkVerified = await users.findOne({where:{id:account["id"]}});
+    if(checkVerified["is_verified"]) return messages.errorServer("Your account already verified");
     const result = await users.update(
         { is_verified: true },
         { where: { id: account["id"] } }
@@ -151,7 +153,7 @@ async function forgotPassword(email) {
     };
     await sendMail(email, "Reset Your Password", content);
     return messages.success(
-        "Please check your email to reset your password in 2 hours"
+        "Please check your email to reset your password, expired in 4 hours"
     );
 }
 
